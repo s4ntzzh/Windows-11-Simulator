@@ -7,15 +7,18 @@
     --radius-sm: 4px;
 }
 
-/* NOVO CÓDIGO: Papel de Parede Oficial do Windows 11 */
+
+/* NOVO CÓDIGO FINAL: Papel de Parede Oficial do Windows 11 (Tema Escuro) */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     overflow: hidden;
-    /* O fundo do Windows 11 'Bloom' (Tema Escuro) */
-    background: #000 url('https://i.imgur.com/rN5t2G5.png') no-repeat center center;
+    /* Novo Fundo do Windows 11 'Bloom' Dark */
+    background: #000 url('https://i.ibb.co/6P80y87/win11-dark-bloom.jpg') no-repeat center center;
     background-size: cover; /* Garante que a imagem preencha toda a tela */
     cursor: default;
+}
+
 }
 
 }
