@@ -1,57 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
+<html lang="pt-br">
+<head>
     <meta charset="UTF-8">
-    <title>Untitled</title>
-    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop Windows 11 - Simulação</title>
+    <style>
+        /* Variáveis e Estilos Base */
+        :root {
+            --color-bg: #e6e6e6; /* Fundo claro */
+            --color-taskbar: rgba(243, 243, 243, 0.7); /* Translucidez leve */
+            --color-blue: #0078d4;
+            --radius-md: 8px;
+            --radius-sm: 4px;
+        }
 
-  </head>
-    
-  <body>
-  <div class="start-menu" id="startMenu">
-    <div class="menu-header">Apps Fixados</div>
-    <div class="menu-item" onclick="openWindow()">
-        📁 Explorador de Arquivos
-    </div>
-    <div class="menu-item">
-        ⚙️ Configurações
-    </div>
-    <div class="menu-item">
-        🌐 Edge
-    </div>
-    <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
-    <div class="menu-item" style="display: flex; justify-content: space-between;">
-        <span>Usuário (Olá!)</span>
-        <span style="color: var(--color-blue);">Desligar...</span>
-    </div>
-</div>
+        /* 1. PLANO DE FUNDO OFICIAL (TEMA CLARO) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            /* Imagem do Windows 11 Bloom (TEMA CLARO) */
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/Windows_11_Wallpaper_White.jpg');
+            background-size: cover; 
+            background-position: center center;
+            background-repeat: no-repeat;
+            cursor: default;
+        }
 
-<div class="window" id="myWindow" style="display: block;">
-    <div class="window-titlebar" id="windowTitlebar">
-        <span>Explorador de Arquivos</span>
-        <span class="close-button" onclick="closeWindow()">X</span>
-    </div>
-    <div class="window-content">
-        <p style="font-size: 16px; font-weight: 600;">Bem-vindo ao Windows 11 Virtual!</p>
-        <p>Esta simulação usa CSS moderno para imitar o design com cantos arredondados e a barra de tarefas centralizada.</p>
-    </div>
-</div>
+        /* --- Barra de Tarefas (Taskbar) - Centralizada e Flutuante --- */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background-color: var(--color-taskbar);
+            backdrop-filter: blur(10px); /* Efeito Mica/Acrílico (simulado) */
+            display: flex;
+            justify-content: center; /* Centraliza os ícones */
+            padding: 0 10px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
 
-<div class="taskbar">
-    <div class="taskbar-center">
-        <button class="start-button" id="startButton" onclick="toggleStartMenu()">
-            &#x2745; </button>
-        <button class="start-button" onclick="openWindow()">
-            📁
-        </button>
-    </div>
-    
-    <div class="taskbar-clock" id="clock">
+        .taskbar-center {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            border-radius: var(--radius-md);
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 0 5px;
+        }
+
+        /* Botão Iniciar */
+        .start-button {
+            background-color: transparent;
+            border: none;
+            color: var(--color-blue);
+            font-size: 24px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s, border-radius 0.2s;
+            border-radius: var(--radius-sm);
+        }
+        .start-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .start-button:active, .start-button.active {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Relógio */
+        .taskbar-clock {
+            position: absolute; /* Coloca o relógio no canto, fora da centralização */
+            right: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 14px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Menu Iniciar --- */
+        .start-menu {
+            position: fixed;
+            bottom: 60px; /* Acima da taskbar */
+            width: 380px;
+            height: 500px;
+            left: 50%;
+            transform: translateX(-50%); /* Centraliza o menu */
+            background-color: rgba(243, 243, 243, 0.85); /* Fundo translúcido */
+            backdrop-filter: blur(15px);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            z-index: 99;
+        }
+        .start-menu.show {
+            display: flex;
+        }
+
+        .menu-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .menu-item {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            margin-bottom: 5px;
+        }
+        .menu-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Estilo da Janela (Arredondada e Moderna) --- */
+        .window {
+            position: absolute;
+            top: 80px;
+            left: 80px;
+            width: 400px;
+            min-height: 250px;
+            background-color: #f8f8f8;
+            border-radius: var(--radius-md); /* Cantos arredondados */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 50;
+            display: none;
+        }
+        .window-titlebar {
+            background-color: var(--color-blue);
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .window-content {
+            padding: 15px;
+            background-color: white;
+            min-height: 100%;
+        }
+        .close-button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+        }
+        .close-button:hover {
+            background-color: #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="start-menu" id="startMenu">
+        <div class="menu-header">Apps Fixados</div>
+        <div class="menu-item" onclick="openWindow()">
+            📁 Explorador de Arquivos
         </div>
-</div>
-    <script  src="./script.js"></script>
+        <div class="menu-item">
+            ⚙️ Configurações
+        </div>
+        <div class="menu-item">
+            🌐 Edge
+        </div>
+        <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
+        <div class="menu-item" style="display: flex; justify-content: space-between;">
+            <span>Usuário (Olá!)</span>
+            <span style="color: var(--color-blue);">Desligar...</span>
+        </div>
+    </div>
 
-  </body>
-  
+    <div class="window" id="myWindow" style="display: block;">
+        <div class="window-titlebar" id="windowTitlebar">
+            <span>Explorador de Arquivos</span>
+            <span class="close-button" onclick="closeWindow()">X</span>
+        </div>
+        <div class="window-content">
+            <p style="font-size: 16px; font-weight: 600;">Bem-vindo ao Windows 11 Virtual!</p>
+            <p>Seu desktop agora está usando o tema claro oficial.</p>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-center">
+            <button class="start-button" id="startButton" onclick="toggleStartMenu()">
+                &#x2745; </button>
+            <button class="start-button" onclick="openWindow()">
+                📁
+            </button>
+        </div>
+        
+        <div class="taskbar-clock" id="clock">
+            </div>
+    </div>
+
+    <script>
+        // --- FUNÇÕES DE INTERAÇÃO DO JAVASCRIPT ---
+
+        // 1. Relógio
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); 
+
+        // 2. Menu Iniciar
+        const startMenu = document.getElementById('startMenu');
+        const startButton = document.getElementById('startButton');
+
+        function toggleStartMenu() {
+            startMenu.classList.toggle('show');
+            startButton.classList.toggle('active');
+        }
+
+        // 3. Funções da Janela
+        const myWindow = document.getElementById('myWindow');
+
+        function openWindow() {
+            myWindow.style.display = 'block';
+            startMenu.classList.remove('show');
+            startButton.classList.remove('active');
+        }
+
+        function closeWindow() {
+            myWindow.style.display = 'none';
+        }
+        
+        // 4. Fechar Menu ao clicar fora
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+            if (!target.closest('.start-button') && !target.closest('.start-menu')) {
+                startMenu.classList.remove('show');
+                startButton.classList.remove('active');
+            }
+        });
+
+
+        // 5. Arrastar a Janela (Drag Functionality)
+        const titlebar = document.getElementById('windowTitlebar');
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+
+        titlebar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offset.x = e.clientX - myWindow.offsetLeft;
+            offset.y = e.clientY - myWindow.offsetTop;
+            myWindow.style.zIndex = 1000; 
+            titlebar.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            myWindow.style.left = (e.clientX - offset.x) + 'px';
+            myWindow.style.top = (e.clientY - offset.y) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            titlebar.style.cursor = 'grab';
+            myWindow.style.zIndex = 50;
+        });
+
+    </script>
+
+</body>
 </html>
