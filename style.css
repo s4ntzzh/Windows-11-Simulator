@@ -1,0 +1,84 @@
+/* Variáveis e Estilos Base */
+:root {
+    --color-bg: #e6e6e6; /* Fundo claro */
+    --color-taskbar: rgba(243, 243, 243, 0.7); /* Translucidez leve */
+    --color-blue: #0078d4;
+    --radius-md: 8px;
+    --radius-sm: 4px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #001f3f, #0074d9); /* Fundo moderno */
+    cursor: default;
+}
+
+/* --- Barra de Tarefas (Taskbar) - Centralizada e Flutuante --- */
+.taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background-color: var(--color-taskbar);
+    backdrop-filter: blur(10px); /* Efeito Mica/Acrílico (simulado) */
+    display: flex;
+    justify-content: center; /* Centraliza os ícones */
+    padding: 0 10px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.taskbar-center {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 0 5px;
+}
+
+/* Botão Iniciar */
+.start-button {
+    background-color: transparent;
+    border: none;
+    color: var(--color-blue);
+    font-size: 24px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s, border-radius 0.2s;
+    border-radius: var(--radius-sm);
+}
+.start-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.start-button:active, .start-button.active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Relógio */
+.taskbar-clock {
+    position: absolute; /* Coloca o relógio no canto, fora da centralização */
+    right: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-size: 14px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* --- Menu Iniciar --- */
+.start-menu {
+    position: fixed;
+    bottom: 60px; /* Acima da taskbar */
+    width: 380px;
+    height: 500px;
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza o menu */
+    background-color: rgba(243, 243, 243, 0.85); /* Fundo translúcido */
+    backdrop-filter: blur(15px);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0

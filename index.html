@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <div class="start-menu" id="startMenu">
+    <div class="menu-header">Apps Fixados</div>
+    <div class="menu-item" onclick="openWindow()">
+        📁 Explorador de Arquivos
+    </div>
+    <div class="menu-item">
+        ⚙️ Configurações
+    </div>
+    <div class="menu-item">
+        🌐 Edge
+    </div>
+    <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
+    <div class="menu-item" style="display: flex; justify-content: space-between;">
+        <span>Usuário (Olá!)</span>
+        <span style="color: var(--color-blue);">Desligar...</span>
+    </div>
+</div>
+
+<div class="window" id="myWindow" style="display: block;">
+    <div class="window-titlebar" id="windowTitlebar">
+        <span>Explorador de Arquivos</span>
+        <span class="close-button" onclick="closeWindow()">X</span>
+    </div>
+    <div class="window-content">
+        <p style="font-size: 16px; font-weight: 600;">Bem-vindo ao Windows 11 Virtual!</p>
+        <p>Esta simulação usa CSS moderno para imitar o design com cantos arredondados e a barra de tarefas centralizada.</p>
+    </div>
+</div>
+
+<div class="taskbar">
+    <div class="taskbar-center">
+        <button class="start-button" id="startButton" onclick="toggleStartMenu()">
+            &#x2745; </button>
+        <button class="start-button" onclick="openWindow()">
+            📁
+        </button>
+    </div>
+    
+    <div class="taskbar-clock" id="clock">
+        </div>
+</div>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
