@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desktop Windows 11 - Simulação</title>
+    <title>Desktop Windows 11 - Simulação (Versão Estável)</title>
     <style>
         /* Variáveis e Estilos Base */
         :root {
             --color-bg: #e6e6e6; 
             --color-taskbar: rgba(243, 243, 243, 0.7); 
-            --color-blue: #0078d4;
-            --color-main: #6200EE; /* <--- MUDANÇA 1: NOVA COR PRINCIPAL (ROXO) */
+            --color-main: #6200EE; /* Cor Roxo para teste de atualização */
             --radius-md: 8px;
             --radius-sm: 4px;
         }
@@ -20,6 +19,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             overflow: hidden;
+            /* LINK ESTÁVEL E CORRETO PARA O PAPEL DE PAREDE */
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/Windows_11_Wallpaper_White.jpg');
             background-size: cover; 
             background-position: center center;
@@ -27,28 +27,7 @@
             cursor: default;
         }
 
-        /* --- Estilo para Ícones do Desktop (MUDANÇA 3: ESTILO DO ÍCONE) --- */
-        .desktop-icon {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: black; /* Ícones em tema claro são escuros */
-            font-size: 12px;
-            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background 0.2s;
-        }
-
-        .desktop-icon:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- Barra de Tarefas (Taskbar) --- */
+        /* --- Barra de Tarefas (Taskbar) - Estilo Mínimo --- */
         .taskbar {
             position: fixed;
             bottom: 0;
@@ -56,7 +35,7 @@
             right: 0;
             height: 48px;
             background-color: var(--color-taskbar);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); 
             display: flex;
             justify-content: center;
             padding: 0 10px;
@@ -64,240 +43,52 @@
             z-index: 100;
         }
 
+        .taskbar-center {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
         /* Botão Iniciar */
         .start-button {
             background-color: transparent;
             border: none;
-            color: var(--color-main); /* <--- MUDANÇA 1: USA NOVA COR */
+            color: var(--color-main); /* Deve ser roxo se a atualização funcionar */
             font-size: 24px;
             padding: 8px 12px;
             cursor: pointer;
-            transition: background 0.2s, border-radius 0.2s;
             border-radius: var(--radius-sm);
         }
-        .start-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        .start-button:active, .start-button.active {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
 
-        /* --- Estilo da Janela --- */
-        .window {
-            position: absolute;
-            top: 80px;
-            left: 80px;
-            width: 400px;
-            min-height: 250px;
-            background-color: #f8f8f8;
-            border-radius: var(--radius-md); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            z-index: 50;
-            display: none;
-            transition: all 0.2s ease-in-out; /* Para animação de Maximizar */
-        }
-        
-        /* Estado Maximizado (MUDANÇA 2: ESTADO MAXIMIZADO) */
-        .window.maximized {
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: calc(100vh - 48px) !important; /* Altura total menos a taskbar */
-            border-radius: 0;
-            cursor: default;
-        }
-
-        .window-titlebar {
-            background-color: var(--color-main); /* <--- MUDANÇA 1: USA NOVA COR */
-            color: white;
-            padding: 10px 15px;
-            font-weight: 600;
-            cursor: grab;
+        /* Relógio */
+        .taskbar-clock {
+            position: absolute; 
+            right: 0;
+            height: 100%;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            padding: 0 15px;
+            font-size: 14px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
-        /* Controles da Janela (Maximizar/Minimizar/Fechar) */
-        .window-controls {
-            display: flex;
-        }
-
-        .control-button, .close-button {
-            background-color: transparent;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 5px 10px;
-            height: 30px;
-            line-height: 1;
-            transition: background 0.2s;
-        }
-
-        .control-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .close-button:hover {
-            background-color: #ff4d4d;
-        }
-        
-        .window-content {
-            padding: 15px;
-            background-color: white;
-            min-height: 100%;
-        }
-
     </style>
 </head>
 <body>
-    
-    <div class="desktop-icon" onclick="openWindow()">
-        <img src="https://i.imgur.com/vHq7JbE.png" alt="Meu PC" style="width: 40px; height: 40px;">
-        <span>Meu PC</span>
-    </div>
-
-    <div class="start-menu" id="startMenu">
-        <div class="menu-header">Apps Fixados</div>
-        <div class="menu-item" onclick="openWindow()">
-            📁 Explorador de Arquivos
-        </div>
-        <div class="menu-item">
-            ⚙️ Configurações
-        </div>
-        <div class="menu-item">
-            🌐 Edge
-        </div>
-        <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
-        <div class="menu-item" style="display: flex; justify-content: space-between;">
-            <span>Usuário (Olá!)</span>
-            <span style="color: var(--color-main);">Desligar...</span>
-        </div>
-    </div>
-
-    <div class="window" id="myWindow" style="display: none;"> <div class="window-titlebar" id="windowTitlebar">
-            <span>Explorador de Arquivos</span>
-            <div class="window-controls">
-                <button class="control-button" onclick="minimizeWindow()">—</button>
-                <button class="control-button" onclick="maximizeWindow()">□</button>
-                <button class="close-button" onclick="closeWindow()">X</button>
-            </div>
-        </div>
-        <div class="window-content">
-            <p style="font-size: 16px; font-weight: 600;">Seu desktop está agora customizado com a cor roxa e botões funcionais!</p>
-            <p>Clique no botão '—' para minimizar ou no '□' para maximizar a janela.</p>
-        </div>
-    </div>
 
     <div class="taskbar">
         <div class="taskbar-center">
-            <button class="start-button" id="startButton" onclick="toggleStartMenu()">
-                &#x2745; </button>
-            <button class="start-button" id="taskbarWindowButton" onclick="openWindow()">
+            <button class="start-button">
+                &#x2745; 
+            </button>
+            <button class="start-button">
                 📁
             </button>
         </div>
         
         <div class="taskbar-clock" id="clock">
-            </div>
+            10:56
+        </div>
     </div>
-
-    <script>
-        // --- FUNÇÕES DE INTERAÇÃO DO JAVASCRIPT ---
-        const myWindow = document.getElementById('myWindow');
-        const startMenu = document.getElementById('startMenu');
-        const startButton = document.getElementById('startButton');
-        const titlebar = document.getElementById('windowTitlebar');
-
-        // 1. Relógio
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock(); 
-
-        // 2. Menu Iniciar
-        function toggleStartMenu() {
-            startMenu.classList.toggle('show');
-            startButton.classList.toggle('active');
-        }
-
-        // 3. Funções da Janela (MUDANÇA 2: MINIMIZAR/MAXIMIZAR)
-        
-        // Abre a janela (usada pelo botão Iniciar e Ícone do Desktop)
-        function openWindow() {
-            myWindow.style.display = 'block';
-            startMenu.classList.remove('show');
-            startButton.classList.remove('active');
-        }
-        
-        // Fecha a janela
-        function closeWindow() {
-            myWindow.style.display = 'none';
-        }
-        
-        // Minimiza a janela (o mesmo que fechar, mas com intenção diferente)
-        function minimizeWindow() {
-            closeWindow();
-        }
-
-        // Maximiza/Restaura a janela
-        function maximizeWindow() {
-            myWindow.classList.toggle('maximized');
-            // Remove a funcionalidade de arrastar quando maximizada
-            if (myWindow.classList.contains('maximized')) {
-                titlebar.style.cursor = 'default';
-            } else {
-                titlebar.style.cursor = 'grab';
-            }
-        }
-
-        // 4. Fechar Menu ao clicar fora
-        document.addEventListener('click', function(event) {
-            const target = event.target;
-            if (!target.closest('.start-button') && !target.closest('.start-menu')) {
-                startMenu.classList.remove('show');
-                startButton.classList.remove('active');
-            }
-        });
-
-
-        // 5. Arrastar a Janela (Drag Functionality)
-        let isDragging = false;
-        let offset = { x: 0, y: 0 };
-
-        titlebar.addEventListener('mousedown', (e) => {
-            // Só permite arrastar se a janela NÃO estiver maximizada
-            if (myWindow.classList.contains('maximized')) return;
-            
-            isDragging = true;
-            offset.x = e.clientX - myWindow.offsetLeft;
-            offset.y = e.clientY - myWindow.offsetTop;
-            myWindow.style.zIndex = 1000; 
-            titlebar.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            myWindow.style.left = (e.clientX - offset.x) + 'px';
-            myWindow.style.top = (e.clientY - offset.y) + 'px';
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            if (!myWindow.classList.contains('maximized')) {
-                titlebar.style.cursor = 'grab';
-            }
-            myWindow.style.zIndex = 50;
-        });
-
-    </script>
 
 </body>
 </html>
-
