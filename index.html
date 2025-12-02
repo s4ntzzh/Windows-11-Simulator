@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desktop Windows 11 - Simulação Final</title>
+    <title>Desktop Windows 11 - Simulação Completa</title>
     <style>
         /* Variáveis e Estilos Base */
         :root {
@@ -231,7 +231,7 @@
         <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
         <div class="menu-item" style="display: flex; justify-content: space-between;">
             <span>Usuário (Olá!)</span>
-            <span style="color: var(--color-main);">Desligar...</span>
+            <span style="color: var(--color-main);" onclick="shutdown()">Desligar...</span>
         </div>
     </div>
 
@@ -312,8 +312,24 @@
                 titlebar.style.cursor = 'grab';
             }
         }
+        
+        // 4. Confirmação de Desligamento
+        function shutdown() {
+            startMenu.classList.remove('show');
+            startButton.classList.remove('active');
+            
+            // Pergunta de Confirmação
+            const confirmShutdown = confirm("Tem certeza que deseja desligar o sistema? (Isto é uma simulação)");
+            
+            if (confirmShutdown) {
+                alert("Sistema desligado. Até logo!");
+            } else {
+                alert("Operação cancelada.");
+            }
+        }
 
-        // 4. Fechar Menu ao clicar fora
+
+        // 5. Fechar Menu ao clicar fora
         document.addEventListener('click', function(event) {
             const target = event.target;
             if (!target.closest('.start-button') && !target.closest('.start-menu')) {
@@ -323,7 +339,7 @@
         });
 
 
-        // 5. Arrastar a Janela (Drag Functionality)
+        // 6. Arrastar a Janela (Drag Functionality)
         let isDragging = false;
         let offset = { x: 0, y: 0 };
 
