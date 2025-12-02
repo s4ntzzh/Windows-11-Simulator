@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desktop Windows 11 - Simulação (Versão Estável)</title>
+    <title>Desktop Windows 11 - Simulação Final</title>
     <style>
         /* Variáveis e Estilos Base */
         :root {
             --color-bg: #e6e6e6; 
             --color-taskbar: rgba(243, 243, 243, 0.7); 
-            --color-main: #6200EE; /* Cor Roxo para teste de atualização */
+            --color-main: #0078d4; /* AZUL PADRÃO WINDOWS */
             --radius-md: 8px;
             --radius-sm: 4px;
         }
 
-        /* 1. PLANO DE FUNDO OFICIAL (TEMA CLARO) */
+        /* PLANO DE FUNDO OFICIAL (TEMA CLARO) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             overflow: hidden;
-            /* LINK ESTÁVEL E CORRETO PARA O PAPEL DE PAREDE */
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/Windows_11_Wallpaper_White.jpg');
             background-size: cover; 
             background-position: center center;
@@ -27,7 +26,28 @@
             cursor: default;
         }
 
-        /* --- Barra de Tarefas (Taskbar) - Estilo Mínimo --- */
+        /* --- Estilo para Ícones do Desktop --- */
+        .desktop-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black; 
+            font-size: 12px;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .desktop-icon:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Barra de Tarefas (Taskbar) --- */
         .taskbar {
             position: fixed;
             bottom: 0;
@@ -47,48 +67,24 @@
             display: flex;
             align-items: center;
             height: 100%;
+            border-radius: var(--radius-md);
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 0 5px;
         }
 
         /* Botão Iniciar */
         .start-button {
             background-color: transparent;
             border: none;
-            color: var(--color-main); /* Deve ser roxo se a atualização funcionar */
+            color: var(--color-main);
             font-size: 24px;
             padding: 8px 12px;
             cursor: pointer;
+            transition: background 0.2s, border-radius 0.2s;
             border-radius: var(--radius-sm);
         }
-
-        /* Relógio */
-        .taskbar-clock {
-            position: absolute; 
-            right: 0;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            font-size: 14px;
-            border-left: 1px solid rgba(0, 0, 0, 0.1);
+        .start-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
         }
-    </style>
-</head>
-<body>
-
-    <div class="taskbar">
-        <div class="taskbar-center">
-            <button class="start-button">
-                &#x2745; 
-            </button>
-            <button class="start-button">
-                📁
-            </button>
-        </div>
+        .start-button:active, .start-button.
         
-        <div class="taskbar-clock" id="clock">
-            10:56
-        </div>
-    </div>
-
-</body>
-</html>
