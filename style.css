@@ -11,8 +11,14 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     overflow: hidden;
-    background: linear-gradient(135deg, #001f3f, #0074d9); /* Fundo moderno */
+    /* Novo Fundo do Windows 11 Bloom */
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/Windows_11_Wallpaper_White.jpg');
+    background-size: cover; /* Garante que a imagem preencha toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat;
     cursor: default;
+}
+
 }
 
 /* --- Barra de Tarefas (Taskbar) - Centralizada e Flutuante --- */
