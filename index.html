@@ -86,5 +86,272 @@
         .start-button:hover {
             background-color: rgba(0, 0, 0, 0.05);
         }
-        .start-button:active, .start-button.
+        .start-button:active, .start-button.active {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Relógio */
+        .taskbar-clock {
+            position: absolute; 
+            right: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 14px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Menu Iniciar --- */
+        .start-menu {
+            position: fixed;
+            bottom: 60px;
+            width: 380px;
+            height: 500px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(243, 243, 243, 0.85); 
+            backdrop-filter: blur(15px);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            z-index: 99;
+        }
+        .start-menu.show {
+            display: flex;
+        }
+
+        .menu-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .menu-item {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            margin-bottom: 5px;
+        }
+        .menu-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Estilo da Janela e Controles --- */
+        .window {
+            position: absolute;
+            top: 80px;
+            left: 80px;
+            width: 400px;
+            min-height: 250px;
+            background-color: #f8f8f8;
+            border-radius: var(--radius-md); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 50;
+            display: none;
+            transition: all 0.2s ease-in-out; /* Para animação de Maximizar */
+        }
         
+        /* Estado Maximizado */
+        .window.maximized {
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: calc(100vh - 48px) !important; /* Altura total menos a taskbar */
+            border-radius: 0;
+            cursor: default;
+        }
+
+        .window-titlebar {
+            background-color: var(--color-main); 
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Controles da Janela (Maximizar/Minimizar/Fechar) */
+        .window-controls {
+            display: flex;
+        }
+
+        .control-button, .close-button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px 10px;
+            height: 30px;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .control-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-button:hover {
+            background-color: #ff4d4d;
+        }
+        
+        .window-content {
+            padding: 15px;
+            background-color: white;
+            min-height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="desktop-icon" onclick="openWindow()">
+        <img src="https://i.imgur.com/vHq7JbE.png" alt="Meu PC" style="width: 40px; height: 40px;">
+        <span>Meu PC</span>
+    </div>
+
+    <div class="start-menu" id="startMenu">
+        <div class="menu-header">Apps Fixados</div>
+        <div class="menu-item" onclick="openWindow()">
+            📁 Explorador de Arquivos
+        </div>
+        <div class="menu-item">
+            ⚙️ Configurações
+        </div>
+        <div class="menu-item">
+            🌐 Edge
+        </div>
+        <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
+        <div class="menu-item" style="display: flex; justify-content: space-between;">
+            <span>Usuário (Olá!)</span>
+            <span style="color: var(--color-main);">Desligar...</span>
+        </div>
+    </div>
+
+    <div class="window" id="myWindow" style="display: none;">
+        <div class="window-titlebar" id="windowTitlebar">
+            <span>Explorador de Arquivos</span>
+            <div class="window-controls">
+                <button class="control-button" onclick="minimizeWindow()">—</button>
+                <button class="control-button" onclick="maximizeWindow()">□</button>
+                <button class="close-button" onclick="closeWindow()">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <p style="font-size: 16px; font-weight: 600;">Seu desktop está completo!</p>
+            <p>Os botões Maximizar e Minimizar na barra de título estão totalmente funcionais.</p>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-center">
+            <button class="start-button" id="startButton" onclick="toggleStartMenu()">
+                &#x2745;
+            </button>
+            <button class="start-button" id="taskbarWindowButton" onclick="openWindow()">
+                📁
+            </button>
+        </div>
+        
+        <div class="taskbar-clock" id="clock">
+            </div>
+    </div>
+
+    <script>
+        // --- VARIÁVEIS E FUNÇÕES DE INTERAÇÃO DO JAVASCRIPT ---
+        const myWindow = document.getElementById('myWindow');
+        const startMenu = document.getElementById('startMenu');
+        const startButton = document.getElementById('startButton');
+        const titlebar = document.getElementById('windowTitlebar');
+
+        // 1. Relógio
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); 
+
+        // 2. Menu Iniciar
+        function toggleStartMenu() {
+            startMenu.classList.toggle('show');
+            startButton.classList.toggle('active');
+        }
+
+        // 3. Funções da Janela (MAXIMIZAR/MINIMIZAR/FECHAR)
+        function openWindow() {
+            myWindow.style.display = 'block';
+            startMenu.classList.remove('show');
+            startButton.classList.remove('active');
+        }
+
+        function closeWindow() {
+            myWindow.style.display = 'none';
+            myWindow.classList.remove('maximized');
+        }
+
+        function minimizeWindow() {
+            closeWindow();
+        }
+
+        function maximizeWindow() {
+            myWindow.classList.toggle('maximized');
+            // Desabilita o arrastar quando maximizado
+            if (myWindow.classList.contains('maximized')) {
+                titlebar.style.cursor = 'default';
+            } else {
+                titlebar.style.cursor = 'grab';
+            }
+        }
+
+        // 4. Fechar Menu ao clicar fora
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+            if (!target.closest('.start-button') && !target.closest('.start-menu')) {
+                startMenu.classList.remove('show');
+                startButton.classList.remove('active');
+            }
+        });
+
+
+        // 5. Arrastar a Janela (Drag Functionality)
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+
+        titlebar.addEventListener('mousedown', (e) => {
+            if (myWindow.classList.contains('maximized')) return;
+            
+            isDragging = true;
+            offset.x = e.clientX - myWindow.offsetLeft;
+            offset.y = e.clientY - myWindow.offsetTop;
+            myWindow.style.zIndex = 1000; 
+            titlebar.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            myWindow.style.left = (e.clientX - offset.x) + 'px';
+            myWindow.style.top = (e.clientY - offset.y) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            if (!myWindow.classList.contains('maximized')) {
+                titlebar.style.cursor = 'grab';
+            }
+            myWindow.style.zIndex = 50;
+        });
+
+    </script>
+
+</body>
+</html>
