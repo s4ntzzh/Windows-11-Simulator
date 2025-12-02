@@ -90,18 +90,6 @@
             background-color: rgba(0, 0, 0, 0.1);
         }
 
-        /* Relógio */
-        .taskbar-clock {
-            position: absolute; 
-            right: 0;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            font-size: 14px;
-            border-left: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
         /* --- Menu Iniciar --- */
         .start-menu {
             position: fixed;
@@ -156,12 +144,22 @@
             transition: all 0.2s ease-in-out; /* Para animação de Maximizar */
         }
         
-        /* Estado Maximizado */
+        /* Estado Maximizado para todas as janelas */
         .window.maximized {
             top: 0 !important;
             left: 0 !important;
             width: 100vw !important;
             height: calc(100vh - 48px) !important; /* Altura total menos a taskbar */
+            border-radius: 0;
+            cursor: default;
+        }
+        
+        /* NOVO ESTILO: ESTADO MAXIMIZADO PARA O EDGE (Caso precise de estilos específicos) */
+        .edge-window.maximized {
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: calc(100vh - 48px) !important; 
             border-radius: 0;
             cursor: default;
         }
@@ -222,11 +220,11 @@
         <div class="menu-item" onclick="openWindow()">
             📁 Explorador de Arquivos
         </div>
-        <div class="menu-item">
-            ⚙️ Configurações
+        <div class="menu-item" onclick="openEdge()">
+            🌐 Edge
         </div>
         <div class="menu-item">
-            🌐 Edge
+            ⚙️ Configurações
         </div>
         <hr style="border-color: rgba(0,0,0,0.1); margin: 15px 0;">
         <div class="menu-item" style="display: flex; justify-content: space-between;">
@@ -250,6 +248,29 @@
         </div>
     </div>
 
+    <div class="window edge-window" id="edgeWindow" style="display: none; width: 800px; height: 500px; top: 50px; left: 150px;">
+        <div class="window-titlebar" id="edgeTitlebar">
+            <span>Microsoft Edge</span>
+            <div class="window-controls">
+                <button class="control-button" onclick="minimizeEdge()">—</button>
+                <button class="control-button" onclick="maximizeEdge()">□</button>
+                <button class="close-button" onclick="closeEdge()">X</button>
+            </div>
+        </div>
+        <div class="window-content edge-content" style="padding: 0;">
+            <div style="padding: 5px 10px; border-bottom: 1px solid #ccc; display: flex; align-items: center; background-color: #f0f0f0;">
+                <span style="font-size: 18px; margin-right: 10px;">&#x2190;</span> <input type="text" value="https://www.google.com/search?q=Windows+11+Simulator" readonly 
+                    style="flex-grow: 1; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                <span style="margin-left: 10px;">🌐</span>
+            </div>
+            
+            <iframe src="https://www.google.com/search?q=Windows+11+Simulator" 
+                    style="width: 100%; height: calc(100% - 37px); border: none;">
+            </iframe>
+        </div>
+    </div>
+
+
     <div class="taskbar">
         <div class="taskbar-center">
             <button class="start-button" id="startButton" onclick="toggleStartMenu()">
@@ -257,6 +278,9 @@
             </button>
             <button class="start-button" id="taskbarWindowButton" onclick="openWindow()">
                 📁
+            </button>
+            <button class="start-button" onclick="openEdge()">
+                &#x1F310;
             </button>
         </div>
         
@@ -270,6 +294,11 @@
         const startMenu = document.getElementById('startMenu');
         const startButton = document.getElementById('startButton');
         const titlebar = document.getElementById('windowTitlebar');
+
+        // NOVAS VARIÁVEIS PARA O EDGE
+        const edgeWindow = document.getElementById('edgeWindow');
+        const edgeTitlebar = document.getElementById('edgeTitlebar');
+
 
         // 1. Relógio
         function updateClock() {
@@ -287,7 +316,7 @@
             startButton.classList.toggle('active');
         }
 
-        // 3. Funções da Janela (MAXIMIZAR/MINIMIZAR/FECHAR)
+        // 3. Funções da Janela Explorador de Arquivos
         function openWindow() {
             myWindow.style.display = 'block';
             startMenu.classList.remove('show');
@@ -313,6 +342,32 @@
             }
         }
         
+        // --- FUNÇÕES DA JANELA EDGE (NAVEGADOR) ---
+        function openEdge() {
+            edgeWindow.style.display = 'block';
+            startMenu.classList.remove('show');
+            startButton.classList.remove('active');
+        }
+
+        function closeEdge() {
+            edgeWindow.style.display = 'none';
+            edgeWindow.classList.remove('maximized');
+        }
+
+        function minimizeEdge() {
+            closeEdge();
+        }
+
+        function maximizeEdge() {
+            edgeWindow.classList.toggle('maximized');
+            if (edgeWindow.classList.contains('maximized')) {
+                edgeTitlebar.style.cursor = 'default';
+            } else {
+                edgeTitlebar.style.cursor = 'grab';
+            }
+        }
+
+
         // 4. Confirmação de Desligamento
         function shutdown() {
             startMenu.classList.remove('show');
@@ -339,7 +394,7 @@
         });
 
 
-        // 6. Arrastar a Janela (Drag Functionality)
+        // 6. Arrastar a Janela (Drag Functionality) - Explorador de Arquivos
         let isDragging = false;
         let offset = { x: 0, y: 0 };
 
@@ -366,8 +421,39 @@
             }
             myWindow.style.zIndex = 50;
         });
+        
+        // 7. Arrastar a Janela EDGE (Drag Functionality)
+        let isDraggingEdge = false;
+        let offsetEdge = { x: 0, y: 0 };
+
+        edgeTitlebar.addEventListener('mousedown', (e) => {
+            if (edgeWindow.classList.contains('maximized')) return;
+            
+            isDraggingEdge = true;
+            offsetEdge.x = e.clientX - edgeWindow.offsetLeft;
+            offsetEdge.y = e.clientY - edgeWindow.offsetTop;
+            edgeWindow.style.zIndex = 1001; // Z-Index ligeiramente maior
+            edgeTitlebar.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDraggingEdge) return;
+            edgeWindow.style.left = (e.clientX - offsetEdge.x) + 'px';
+            edgeWindow.style.top = (e.clientY - offsetEdge.y) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDraggingEdge = false;
+            if (!edgeWindow.classList.contains('maximized')) {
+                edgeTitlebar.style.cursor = 'grab';
+            }
+            // Retorna o zIndex para o valor padrão se a janela não estiver sendo arrastada
+            edgeWindow.style.zIndex = 50; 
+        });
+
 
     </script>
 
 </body>
-</html>
+        </html>
+            
